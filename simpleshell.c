@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "shellfunc.h"
+#include "history.h"
 
 
 int main (void) {
@@ -9,12 +10,6 @@ int main (void) {
   char* output = "";
   char* builtIn = "cd getpath setpath alias unalias history";
   char** parsed;
-  char** hist = malloc(sizeof(char*) * 20);
-  int cmdSaved = 0;
-
-  for (int i = 0; i < 20; i++) {
-    hist[i] = malloc(sizeof(char)*512);
-  }
   
   char* path = loadEnvironment();
   
@@ -29,23 +24,14 @@ int main (void) {
     parsed = parseInput(buffer);
     
     if (strcspn("!", parsed[0]) == 0) {
-      strcpy(buffer, invokeHistory(parsed[0], hist));
+      strcpy(buffer, invokeHistory(parsed));
       parsed = parseInput(buffer);
     } else {
-      int i = 0;
-      char cmd[512] = {};
-      
-      while (parsed[i]) {
-	strcat(cmd, parsed[i]);
-	strcat(cmd, " ");
-	i++;
-      }
-      strcpy(hist[cmdSaved], cmd);
-      cmdSaved = (cmdSaved + 1) % 20;
+      addHistory(parsed);
     }
     
     if (strstr(builtIn, parsed[0]) || !output || strcmp(parsed[0], "exit") == 0) {
-      executeBuiltIn(parsed, hist);
+      executeBuiltIn(parsed);
     } else {
       execute(parsed);
     }    

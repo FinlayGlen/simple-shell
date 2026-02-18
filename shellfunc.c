@@ -5,12 +5,15 @@
 #include <sys/types.h>
 #include <string.h>
 #include "shellfunc.h"
+#include "history.h"
 
 // Uses getenv function so we can initialise variables for the path and home directory
 char* loadEnvironment () {
   printf("Loading environment...\n");
   char* path = getenv("PATH");
   char* home = getenv("HOME");
+
+  loadHistory();
   
   chdir(home); // Changes directory to the home directory
   return path;
@@ -53,17 +56,14 @@ void execute (char* args[]) {
 }
 
 // Executes built in command; passed in as parameter
-void executeBuiltIn (char* args[], char* history[]) {
-  char* cmds[] = { "cd", "getpath", "setpath" }; // Array containing built in commands
+void executeBuiltIn (char* args[]) {
+  char* cmds[] = { "cd", "getpath", "setpath", "history" }; // Array containing built in commands
   
-  void (*builtIns[])(char**) = { cd, getPath, setPath }; // Array containing pointers to built-ins
+  void (*builtIns[])(char**) = { cd, getPath, setPath, listHistory }; // Array containing pointers to built-ins
   
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 4; i++) {
     if (strcmp(args[0], cmds[i]) == 0) {
       builtIns[i](args);
-    } else if (strcmp(args[0], "history") == 0) {
-      listHistory(args, history);
-      break;
     }
   }
 }
@@ -97,52 +97,7 @@ void cd (char* args[]) {
 }
 
 // Calculates history index <<<< not quite sure how to comment this function and it's contents
-int calculateHistoryIndex(char* arg, int length) {
-  int n = 0;
-  if (strcmp(arg, "!!") == 0) {
-    n = 1;
-  } else if (length == 2 || (length == 3 && arg[1] == '-')) {
-    n = arg[length-1] - '0';
-  } else if (length == 3 || length == 4){
-    n = (arg[length-2] - '0') * 10 + (arg[length-1] - '0');
-  } else {
-    return 0;
-  }
 
-  if (arg[1] == '-' || (arg[2] == '0' && arg[1] == '-')) {
-    n = 20 - n;
-  }
-
-  printf("n: %d\n", n);
-  
-  return n;
-}
-
-// Invokes history, oncemore unsure about this one
-char* invokeHistory (char* arg, char* hist[]) {
-  int n = 0;
-  
-  n = calculateHistoryIndex(arg, strlen(arg));
-  
-  if (n < -19 || n == 0 ||  n > 20) {
-    printf("Error: History must be from -19 to 20\n");
-  } else if (strcmp(hist[n-1], "") == 0) {
-    printf("Error: No history for that index\n");
-  } else {
-    return hist[n-1];
-  }
-  
-  return "";
-}
-
-// Prints full history(?)
-void listHistory (char* args[], char* hist[]) {
-  int i = 0;
-  while (strcmp(hist[i], "") != 0) {
-    printf("%d: %s\n", i+1, hist[i]);
-    i++;
-  }
-}
 
 // Exits shell
 void exitShell (char* path) {
