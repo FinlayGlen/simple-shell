@@ -7,12 +7,12 @@ char* aliasMap[2][10] = { {"","","","","","","","","",""}, {"","","","","","",""
 
 void alias (char* args[]){
 
-  // Print all aliases when just 'alias' is written
+  // Print aliases when no parameters
   if (args[1] == NULL){
 
     //Check if there are any aliases
     int i = 0;
-    while(!strcmp(aliasMap[0][i], "")){
+    while((!strcmp(aliasMap[0][i], ""))){
       if(i > 9){
         printf("There are no aliases\n");
         return;
@@ -27,10 +27,6 @@ void alias (char* args[]){
   }
 
   // Validation
-  else if (strcmp(aliasMap[0][9], "")){
-    printf("Error you have reached the maximum amount of saved aliases\n");
-    return;
-  }
   else if(args[2] == NULL){
     printf("Error: Not enough parameters provided please use format 'alias <name> <command>'\n");
     return;
@@ -41,24 +37,41 @@ void alias (char* args[]){
   }
 
 
-  //Setting alias
-  else{   
-    int i = 0;
-    // find a free slot
-    while(strcmp(aliasMap[0][i], "")){
-      i++;
+  // Setting alias
+  int i = 0;
+  // Find a free slot and check if the alias is in use 
+  while(( (strcmp(aliasMap[0][i], "")) && ((strcmp(aliasMap[0][i], args[1]))) ) ){
+    if(i == 9){
+      break;
     }
-    // setting memory for 
-      aliasMap[0][i] = malloc(strlen(args[1]));
-      strcpy(aliasMap[0][i], args[1]);
-      aliasMap[1][i] = malloc(strlen(args[2]));
-      strcpy(aliasMap[1][i], args[2]);
+    i++;
   }
+
+  if((i == 9) && (strcmp(aliasMap[0][i],""))){
+    printf("Error: No more aliases can be stored:\n Remove aliases using 'unalias <name>' to free slots\n");
+    return;
+  }
+
+    // If the alias is already in use
+    if(!(strcmp(aliasMap[0][i], args[1]))){
+
+      free(aliasMap[0][i]);
+      aliasMap[0][i] = "";
+      free(aliasMap[1][i]);
+      aliasMap[1][i] = "";
+      
+      printf("Alias has been replaced\n");
+    }
+
+  // Setting memory and 2d array element
+  aliasMap[0][i] = malloc(strlen(args[1]));
+  strcpy(aliasMap[0][i], args[1]);
+  aliasMap[1][i] = malloc(strlen(args[2]));
+  strcpy(aliasMap[1][i], args[2]);
   return;
 }
 
 
-// Remember to free memory malloced in alias
 void unalias (char* args[]){
   if(args[1] == NULL){
     printf("Not enough parameters provided, please use format 'unalias <name>'\n");
@@ -78,7 +91,6 @@ void unalias (char* args[]){
     // removing from memory & array 
       free(aliasMap[0][i]);
       aliasMap[0][i] = "";
-
       free(aliasMap[1][i]);
       aliasMap[1][i] = "";
 
