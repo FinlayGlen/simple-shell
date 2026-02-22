@@ -31,11 +31,9 @@ void addHistory(char** parsed) {
     strcpy(history[saved], cmd);
   }
   saved = (saved + 1) % 20;
-  printf("saved: %d\n", saved);
   if (saved == 0){
     isLooped = 1;
   }
-  printf("%d\n", isLooped);
 }
 
 int calculateIndex(char* arg, int length) {
@@ -68,8 +66,6 @@ char* invokeHistory (char* args[]) {
   int n = 0;
     
   n = calculateIndex(args[0], strlen(args[0]));
-
-  printf("n: %d\n", n);
   
   if (n < 0 ||  n > 19) {
     printf("Error: History must be from -19 to 20\n");
@@ -85,7 +81,9 @@ char* invokeHistory (char* args[]) {
 void listHistory (char* args[]) {
   if (strcmp(history[19], "") == 0) {
     for (int i = 0; i < 20; i++) {
-      printf("%d: %s\n", i+1, history[i]);
+      if (strcmp(history[i], "") != 0) {
+	printf("%d: %s\n", i+1, history[i]);
+      }
     }
   } else {
     for (int i = saved; i < 20+saved; i++) {
