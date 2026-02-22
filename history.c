@@ -31,11 +31,11 @@ void addHistory(char** parsed) {
     strcpy(history[saved], cmd);
   }
   saved = (saved + 1) % 20;
-  printf("saved: %d\n", saved);
+  // printf("saved: %d\n", saved); COMMENTED OUT FOR ALIASES
   if (saved == 0){
     isLooped = 1;
   }
-  printf("%d\n", isLooped);
+  //printf("%d\n", isLooped); COMMENTED OUT FOR ALIASES
 }
 
 int calculateIndex(char* arg, int length) {

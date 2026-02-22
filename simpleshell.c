@@ -3,6 +3,7 @@
 #include <string.h>
 #include "shellfunc.h"
 #include "history.h"
+#include "alias.h"
 
 
 int main (void) {
