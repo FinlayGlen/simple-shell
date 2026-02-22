@@ -63,7 +63,7 @@ void alias (char* args[]){
       printf("Alias has been replaced\n");
     }
 
-  // Setting memory and 2d array element
+  // Allocate memory and add to array
   aliasMap[0][i] = malloc(strlen(args[1]));
   strcpy(aliasMap[0][i], args[1]);
   aliasMap[1][i] = malloc(strlen(args[2]));
@@ -73,6 +73,7 @@ void alias (char* args[]){
 
 
 void unalias (char* args[]){
+
   if(args[1] == NULL){
     printf("Not enough parameters provided, please use format 'unalias <name>'\n");
     return;
@@ -86,9 +87,13 @@ void unalias (char* args[]){
     int i = 0;
     // search for the alias
     while(strcmp(aliasMap[0][i], args[1])){
+      if((i == 9) && (strcmp(aliasMap[0][i], args[1]))){
+        printf("Alias %s does not exist\n", args[1]);
+        return;
+      }
       i++;
     }
-    // removing from memory & array 
+    // free memory & remove array elements 
       free(aliasMap[0][i]);
       aliasMap[0][i] = "";
       free(aliasMap[1][i]);
