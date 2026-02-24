@@ -13,16 +13,16 @@ void loadHistory () {
   FILE *fptr;
   fptr = fopen(".hist_list", "r"); // Open the file
   
-  if(fptr == NULL) {
+  if(fptr == NULL) { // Check to handle file not existing yet
     printf("Not able to open the file.");
     return;
   }
   
-  char fileArr[1000];
+  char fileArr[1000]; // This is where the current line of file being read is stored
   int i = 0;
   while(fgets(fileArr, 1000, fptr)) {
-    fileArr[strcspn(fileArr, "\n")] = 0;
-    strcpy(history[i], fileArr);
+    fileArr[strcspn(fileArr, "\n")] = 0; // Removes the newline to match array format
+    strcpy(history[i], fileArr); // Copies current line of file into history array
     i++;
   }
   fclose(fptr); // Close the file 
@@ -32,15 +32,15 @@ void saveHistory () {
   FILE *fptr;
   fptr = fopen(".hist_list", "w"); // Open the file
   
-  if (strcmp(history[19], "") == 0) {
+  if (strcmp(history[19], "") == 0) { // If last index of history is empty
     for (int i = 0; i < 20; i++) {
-      if (strcmp(history[i], "") != 0) {
-	fprintf(fptr, "%s\n", history[i]);
+      if (strcmp(history[i], "") != 0) { // If current index in history isnt empty
+	fprintf(fptr, "%s\n", history[i]); // Store current index in the file
       }
     }
   } else {
     for (int i = saved; i < 20+saved; i++) {
-      fprintf(fptr, "%s\n", history[i%20]);
+      fprintf(fptr, "%s\n", history[i%20]); // Circular case for when i > 20
     }
   }
   fclose(fptr); // Close the file
@@ -49,15 +49,15 @@ void saveHistory () {
 void addHistory(char** parsed) {
   int i = 0;
   char cmd[512] = {""};
-  while (parsed[i] != NULL) {
+  while (parsed[i] != NULL) { // Concatenates tokensied command back into full command for history
     strcat(cmd, parsed[i]);
     strcat(cmd, " ");
     i++;
   }
   
-  if (strcmp(cmd, " ") != 0 && strcmp(cmd, "exit ") != 0) {
-    strcpy(history[saved], cmd);
-    saved = (saved + 1) % 20;
+  if (strcmp(cmd, " ") != 0 && strcmp(cmd, "exit ") != 0) { // If cmd isnt empty and isnt exit
+    strcpy(history[saved], cmd); // Save cmd in history at array saved
+    saved = (saved + 1) % 20; // Iterate saved circularly
   }
 }
 
@@ -65,21 +65,21 @@ int calculateIndex(char* arg, int length) {
   int n = 0;
   if (strcmp(arg, "!!") == 0) {
     n = saved;
-  } else if (length == 2 || (length == 3 && arg[1] == '-')) {
+  } else if (length == 2 || (length == 3 && arg[1] == '-')) { // Single digit or negative single digit case
     n = (arg[length-1] - '0');
-  } else if (length == 3 || length == 4){
+  } else if (length == 3 || length == 4){ // Double digit or negative double digit case
     n = (arg[length-2] - '0') * 10 + (arg[length-1] - '0');
   } else {
     return 0;
   }
 
   if (arg[1] == '-') {
-    n = 20 - n;
+    n = 20 - n; // Calculates index of negative history invocation
   }
 
-  n = n -1;
+  n = n -1; // Calculates index of positive history invocation
   
-  if (strcmp(history[4], "") != 0) {
+  if (strcmp(history[19], "") != 0) {
     return (n+saved)%20;
   }
   
@@ -89,7 +89,7 @@ int calculateIndex(char* arg, int length) {
 char* invokeHistory (char* args[]) {
   int n = 0;
     
-  n = calculateIndex(args[0], strlen(args[0]));
+  n = calculateIndex(args[0], strlen(args[0])); 
   
   if (n < 0 ||  n > 19) {
     printf("Error: History must be from -19 to 20\n");
@@ -102,16 +102,16 @@ char* invokeHistory (char* args[]) {
   return "";
 }
 
-void listHistory (char* args[]) {
+void listHistory (char* args[]) { // If last index of history is empty
   if (strcmp(history[19], "") == 0) {
     for (int i = 0; i < 20; i++) {
-      if (strcmp(history[i], "") != 0) {
-	printf("%d: %s\n", i+1, history[i]);
+      if (strcmp(history[i], "") != 0) { // If current index of history isnt empty
+	printf("%d: %s\n", i+1, history[i]); // List current index of history
       }
     }
   } else {
     for (int i = saved; i < 20+saved; i++) {
-      printf("%d: %s\n", i-saved+1, history[i%20]);
+      printf("%d: %s\n", i-saved+1, history[i%20]); // Circular case for when i > 20
     }
   }
 }
