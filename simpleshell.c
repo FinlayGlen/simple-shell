@@ -19,6 +19,11 @@ int main (void) {
     
     // Read + Parse input
     output = fgets(buffer, sizeof(buffer), stdin);
+    
+    if (output == NULL) {
+      break;
+    }
+    
     buffer[strcspn(buffer, "\n")] = 0;
 
     parsed = parseInput(buffer);
@@ -35,7 +40,7 @@ int main (void) {
     } else {
       execute(parsed);
     }    
-  } while (output && strcmp(parsed[0], "exit") != 0); // exits while loop if output is NULL or buffer == exit
+  } while (strcmp(parsed[0], "exit") != 0); // exits while loop if output is NULL or buffer == exit
 
   // memory management
   free(parsed);

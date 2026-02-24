@@ -8,14 +8,42 @@
 
 char history[20][512];
 int saved = 0;
-int isLooped = 0;
 
 void loadHistory () {
-
+  FILE *fptr;
+  fptr = fopen(".hist_list", "r"); // Open the file
+  
+  if(fptr == NULL) {
+    printf("Not able to open the file.");
+    return;
+  }
+  
+  char fileArr[1000];
+  int i = 0;
+  while(fgets(fileArr, 1000, fptr)) {
+    fileArr[strcspn(fileArr, "\n")] = 0;
+    strcpy(history[i], fileArr);
+    i++;
+  }
+  fclose(fptr); // Close the file 
 }
 
 void saveHistory () {
-
+  FILE *fptr;
+  fptr = fopen(".hist_list", "w"); // Open the file
+  
+  if (strcmp(history[19], "") == 0) {
+    for (int i = 0; i < 20; i++) {
+      if (strcmp(history[i], "") != 0) {
+	fprintf(fptr, "%s\n", history[i]);
+      }
+    }
+  } else {
+    for (int i = saved; i < 20+saved; i++) {
+      fprintf(fptr, "%s\n", history[i%20]);
+    }
+  }
+  fclose(fptr); // Close the file
 }
 
 void addHistory(char** parsed) {
@@ -27,12 +55,9 @@ void addHistory(char** parsed) {
     i++;
   }
   
-  if (strcmp(cmd, " ") != 0) {
+  if (strcmp(cmd, " ") != 0 && strcmp(cmd, "exit ") != 0) {
     strcpy(history[saved], cmd);
-  }
-  saved = (saved + 1) % 20;
-  if (saved == 0){
-    isLooped = 1;
+    saved = (saved + 1) % 20;
   }
 }
 
@@ -56,7 +81,6 @@ int calculateIndex(char* arg, int length) {
   
   if (strcmp(history[4], "") != 0) {
     return (n+saved)%20;
-    
   }
   
   return n;

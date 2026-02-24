@@ -10,12 +10,16 @@
 // Uses getenv function so we can initialise variables for the path and home directory
 char* loadEnvironment () {
   printf("Loading environment...\n");
+  
   char* path = getenv("PATH");
   char* home = getenv("HOME");
 
-  loadHistory();
+  
   
   chdir(home); // Changes directory to the home directory
+  
+  loadHistory();
+  
   return path;
 }
 
@@ -103,6 +107,7 @@ void cd (char* args[]) {
 void exitShell (char* path) {
   setenv("PATH", path, 1);
   printf("%s\n", getenv("PATH")); 
+  saveHistory();
   printf("exiting...\n");
   exit(0);
 }
