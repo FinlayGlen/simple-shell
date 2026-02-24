@@ -67,7 +67,8 @@ void executeBuiltIn (char* args[]) {
       builtIns[i](args);
     }
   }
-}
+}  
+
 
 // Prints whats stored in PATH
 void getPath (char* args[]) {
@@ -107,3 +108,4 @@ void exitShell (char* path) {
   printf("exiting...\n");
   exit(0);
 }
+

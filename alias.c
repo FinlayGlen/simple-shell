@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "alias.h"
 
-char* aliasMap[2][10] = { {"","","","","","","","","",""}, {"","","","","","","","","",""}};
+char* aliasMap[2][10] = { {"k","j","","","","","","","",""}, {"cd","ls","","","","","","","",""}};
 
 void alias (char* args[]){
 
@@ -35,6 +35,10 @@ void alias (char* args[]){
     printf("Error: Too many parameters, please use format 'alias <name> <command>'\n");
     return;
   }
+  else if (strstr(args[1], "!")){
+    printf("Error: Please avoid using '!' in aliases");
+      return;
+  }
 
 
   // Setting alias
@@ -52,7 +56,7 @@ void alias (char* args[]){
     return;
   }
 
-    // If the alias is already in use
+    // If alias is in use
     if(!(strcmp(aliasMap[0][i], args[1]))){
 
       free(aliasMap[0][i]);
@@ -85,7 +89,7 @@ void unalias (char* args[]){
 
   else{   
     int i = 0;
-    // search for the alias
+    // search for alias
     while(strcmp(aliasMap[0][i], args[1])){
       if((i == 9) && (strcmp(aliasMap[0][i], args[1]))){
         printf("Alias %s does not exist\n", args[1]);
@@ -98,8 +102,20 @@ void unalias (char* args[]){
       aliasMap[0][i] = "";
       free(aliasMap[1][i]);
       aliasMap[1][i] = "";
-
   }  
-  
-
 }
+
+//strcpy 
+  char* invokeAlias(char* args[]){
+    for(int i = 0; i < 10; i++){
+      if (!strcmp(aliasMap[1][i], args[0])){
+        char* outputCmd = "";
+        strcpy(outputCmd, aliasMap[1][i]);
+        strcat(outputCmd, args[1]);
+        strcat(outputCmd, args[2]);
+
+        return (outputCmd) ;
+      }
+    }
+    return args[0];
+  }

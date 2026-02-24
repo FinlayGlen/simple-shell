@@ -30,6 +30,11 @@ int main (void) {
     } else {
       addHistory(parsed);
     }
+
+    strcpy(buffer, invokeAlias(parsed)); // Swap alias to command if applicable 
+    parsed = parseInput(buffer); 
+
+    printf("%s\n", *parsed);
     
     if (strstr(builtIn, parsed[0]) || !output || strcmp(parsed[0], "exit") == 0) {
       executeBuiltIn(parsed);
