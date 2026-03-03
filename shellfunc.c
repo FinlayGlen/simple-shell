@@ -6,6 +6,7 @@
 #include <string.h>
 #include "shellfunc.h"
 #include "history.h"
+#include "alias.h"
 
 // Uses getenv function so we can initialise variables for the path and home directory
 char* loadEnvironment () {
@@ -61,16 +62,17 @@ void execute (char* args[]) {
 
 // Executes built in command; passed in as parameter
 void executeBuiltIn (char* args[]) {
-  char* cmds[] = { "cd", "getpath", "setpath", "history" }; // Array containing built in commands
+  char* cmds[] = { "cd", "getpath", "setpath", "history", "alias", "unalias" }; // Array containing built in commands
   
-  void (*builtIns[])(char**) = { cd, getPath, setPath, listHistory }; // Array containing pointers to built-ins
+  void (*builtIns[])(char**) = { cd, getPath, setPath, listHistory, alias, unalias }; // Array containing pointers to built-ins
   
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 6; i++) {
     if (strcmp(args[0], cmds[i]) == 0) {
       builtIns[i](args);
     }
   }
-}
+}  
+
 
 // Prints whats stored in PATH
 void getPath (char* args[]) {
@@ -111,3 +113,4 @@ void exitShell (char* path) {
   printf("exiting...\n");
   exit(0);
 }
+

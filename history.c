@@ -8,42 +8,35 @@
 
 char history[20][512];
 int saved = 0;
+int isLooped = 0;
 
 void loadHistory () {
-  FILE *fptr;
-  fptr = fopen(".hist_list", "r"); // Open the file
-  
-  if(fptr == NULL) { // Check to handle file not existing yet
-    printf("Not able to open the file.");
-    return;
+  FILE *f = fopen(".hist_list", "r");
+  if (f == NULL) return;
+
+  char buffer[512];
+  while (fgets(buffer, sizeof(buffer), f)) {
+    buffer[strcspn(buffer, "\n")] = 0;
+
+    strcpy(history[saved], buffer); //add history to buffer
+    saved = (saved + 1) % 20; //circular buffer
   }
-  
-  char fileArr[1000]; // This is where the current line of file being read is stored
-  int i = 0;
-  while(fgets(fileArr, 1000, fptr)) {
-    fileArr[strcspn(fileArr, "\n")] = 0; // Removes the newline to match array format
-    strcpy(history[i], fileArr); // Copies current line of file into history array
-    i++;
-  }
-  fclose(fptr); // Close the file 
 }
 
 void saveHistory () {
-  FILE *fptr;
-  fptr = fopen(".hist_list", "w"); // Open the file
-  
-  if (strcmp(history[19], "") == 0) { // If last index of history is empty
+  FILE *f = fopen(".hist_list", "w");
+  if (f == NULL) return;
+
+  if (isLooped) {
     for (int i = 0; i < 20; i++) {
-      if (strcmp(history[i], "") != 0) { // If current index in history isnt empty
-	fprintf(fptr, "%s\n", history[i]); // Store current index in the file
-      }
+      fprintf(f, "%s\n", history[(saved + i) % 20]);
     }
   } else {
-    for (int i = saved; i < 20+saved; i++) {
-      fprintf(fptr, "%s\n", history[i%20]); // Circular case for when i > 20
+      for (int i = 0; i < saved; i++) {
+        fprintf(f, "%s\n", history[i]);
+      }
     }
-  }
-  fclose(fptr); // Close the file
+  fclose(f);
 }
 
 void addHistory(char** parsed) {
