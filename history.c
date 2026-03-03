@@ -11,11 +11,32 @@ int saved = 0;
 int isLooped = 0;
 
 void loadHistory () {
+  FILE *f = fopen(".hist_list", "r");
+  if (f == NULL) return;
 
+  char buffer[512];
+  while (fgets(buffer, sizeof(buffer), f)) {
+    buffer[strcspn(buffer, "\n")] = 0;
+
+    strcpy(history[saved], buffer); //add history to buffer
+    saved = (saved + 1) % 20; //circular buffer
+  }
 }
 
 void saveHistory () {
+  FILE *f = fopen(".hist_list", "w");
+  if (f == NULL) return;
 
+  if (isLooped) {
+    for (int i = 0; i < 20; i++) {
+      fprintf(f, "%s\n", history[(saved + i) % 20]);
+    }
+  } else {
+      for (int i = 0; i < saved; i++) {
+        fprintf(f, "%s\n", history[i]);
+      }
+    }
+  fclose(f);
 }
 
 void addHistory(char** parsed) {

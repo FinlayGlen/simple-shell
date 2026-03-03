@@ -68,9 +68,10 @@ void alias (char* args[]){
     }
 
   // Allocate memory and add to array
-  aliasMap[0][i] = malloc(strlen(args[1]));
+  //fix: for the mallocs, + 1 to account for null terminator
+  aliasMap[0][i] = malloc(strlen(args[1]) + 1);
   strcpy(aliasMap[0][i], args[1]);
-  aliasMap[1][i] = malloc(strlen(args[2]));
+  aliasMap[1][i] = malloc(strlen(args[2]) + 1);
   strcpy(aliasMap[1][i], args[2]);
   return;
 }
@@ -121,4 +122,45 @@ char* invokeAlias(char* args[]){
     }
   }
   return args[0];
+}
+
+
+void saveAlias() {
+  FILE *f = fopen(".aliases", "w");
+  if (f == NULL) return;
+
+  for (int i = 0; i < 10; i++) {
+    //only save slots that arent empty
+    if (strcmp(aliasMap[0][i], "") != 0) {
+      fprintf(f, "%s %s\n", aliasMap[0][i], aliasMap[1][i]);
+    }
+  }
+  fclose(f);
+}
+
+
+void loadAlias() {
+  FILE *f = fopen(".aliases", "r");
+  if (f == NULL) return;
+
+  char buffer[512]; //it is assumed that the line in the terminal is 512 characters long
+  int i = 0;
+
+  //read in each line until eof or max aliases reached
+  while (fgets(buffer, sizeof(buffer), f) && i < 10) {
+    buffer[strcspn(buffer, "\n")] = 0; //remove newline character
+
+    //split line into alias and command
+    char *alias = strtok(buffer, " ");
+    char *command = strtok(NULL, "");
+
+    if (alias != NULL && command != NULL) {
+      aliasMap[0][i] = malloc(strlen(alias) + 1);
+      strcpy(aliasMap[0][i], alias);
+      aliasMap[1][i] = malloc(strlen(command) + 1);
+      strcpy(aliasMap[1][i], command);
+      i++;
+    }
+  }
+  fclose(f);
 }

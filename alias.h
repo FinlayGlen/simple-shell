@@ -1,7 +1,7 @@
 
-//void saveAlias();
+void saveAlias();
 
-//void loadAlias();
+void loadAlias();
 
 void alias (char* args[]);
 
