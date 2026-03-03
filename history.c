@@ -8,7 +8,6 @@
 
 char history[20][512];
 int saved = 0;
-int isLooped = 0;
 
 void loadHistory () {
   FILE *f = fopen(".hist_list", "r");
@@ -27,15 +26,12 @@ void saveHistory () {
   FILE *f = fopen(".hist_list", "w");
   if (f == NULL) return;
 
-  if (isLooped) {
-    for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 20; i++) {
+    if (strcmp(history[(saved + i) % 20], "") != 0) {
       fprintf(f, "%s\n", history[(saved + i) % 20]);
     }
-  } else {
-      for (int i = 0; i < saved; i++) {
-        fprintf(f, "%s\n", history[i]);
-      }
-    }
+  }
+  
   fclose(f);
 }
 
@@ -56,8 +52,16 @@ void addHistory(char** parsed) {
 
 int calculateIndex(char* arg, int length) {
   int n = 0;
+  if ((length > 3 && (length > 4 && arg[1] != '-')) || (length > 4 && arg[1] == '-')) {
+    return -1;
+  }
+  
   if (strcmp(arg, "!!") == 0) {
-    n = saved;
+    if (strcmp(history[19], "") == 0) {
+      n = saved;
+    } else {
+      n = 20;
+    }
   } else if (length == 2 || (length == 3 && arg[1] == '-')) { // Single digit or negative single digit case
     n = (arg[length-1] - '0');
   } else if (length == 3 || length == 4){ // Double digit or negative double digit case
@@ -66,17 +70,11 @@ int calculateIndex(char* arg, int length) {
     return 0;
   }
 
-  if (arg[1] == '-') {
+  if (arg[1] == '-' && arg[2] - '0' != 0) {
     n = 20 - n; // Calculates index of negative history invocation
   }
-
-  n = n -1; // Calculates index of positive history invocation
   
-  if (strcmp(history[19], "") != 0) {
-    return (n+saved)%20;
-  }
-  
-  return n;
+  return n-1;
 }
 
 char* invokeHistory (char* args[]) {
@@ -88,11 +86,13 @@ char* invokeHistory (char* args[]) {
     printf("Error: History must be from -19 to 20\n");
   } else if (strcmp(history[n], "") == 0) {
     printf("Error: No history for that index\n");
-  } else {
+  } else if (strcmp(history[19], "") == 0) {
     return history[n];
+  } else {
+    return history[(n+saved)%20];
   }
   
-  return "";
+  return " ";
 }
 
 void listHistory (char* args[]) { // If last index of history is empty

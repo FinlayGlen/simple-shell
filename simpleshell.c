@@ -39,7 +39,7 @@ int main (void) {
     buffer[strcspn(buffer, "\n")] = 0;
     parsed = parseInput(buffer);
     
-    //if (strcspn("!", parsed[0]) == 0) {
+    
 
       //check for aliased command
       char* aliasCmd = invokeAlias(parsed);
@@ -47,19 +47,17 @@ int main (void) {
         strcpy(buffer, aliasCmd);
         parsed = parseInput(buffer); //reparse alias command
       }
-    //}
 
-      //check for history invocation
-      if (buffer[0] == '!') {
-        char* historyCmd = invokeHistory(parsed);
-        if (strcmp(historyCmd, "") != 0) {
-          printf("%s\n", historyCmd);
-          strcpy(buffer, historyCmd);
-          parsed = parseInput(buffer); //reparse history command
-        }
+      if (strcspn("!", parsed[0]) == 0) {
+	//check for history invocation
+	  char* historyCmd = invokeHistory(parsed);
+	  if (strcmp(historyCmd, "") != 0) {
+	    strcpy(buffer, historyCmd);
+	    parsed = parseInput(buffer); //reparse history command
+	  } 
       } else {
           addHistory(parsed);
-        }
+	}
 
     
     if (strstr(builtIn, parsed[0]) || !output || strcmp(parsed[0], "exit") == 0) {
