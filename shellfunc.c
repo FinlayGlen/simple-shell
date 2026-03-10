@@ -15,8 +15,6 @@ char* loadEnvironment () {
   char* path = getenv("PATH");
   char* home = getenv("HOME");
 
-  
-  
   chdir(home); // Changes directory to the home directory
   
   loadHistory();
@@ -77,7 +75,7 @@ void executeBuiltIn (char* args[]) {
 // Prints whats stored in PATH
 void getPath (char* args[]) {
   if (args[1]) {
-    printf("Error: Too many parameters, none are required\n");
+    printf("getpath: Too many arguments, none are required\n");
   } else {
     printf("%s\n", getenv("PATH"));
   }
@@ -86,9 +84,9 @@ void getPath (char* args[]) {
 // Overwrites what stored in PATH with users input
 void setPath (char* args[]) {
   if (args[1] == NULL) {
-    printf("Error: No parameter provided, please enter a path\n");
+    printf("setpath: No argument provided, please enter a path\n");
   } else if (args[2]) {
-    printf("Error: Too many parameters, please only enter one\n");
+    printf("setpath: Too many arguments, please only enter one\n");
   } else {
     setenv("PATH", args[1], 1); 
   }
@@ -98,7 +96,7 @@ void setPath (char* args[]) {
 void cd (char* args[]) { 
   char* home = getenv("HOME"); // User's home path
   if (args[1] == NULL) chdir(home); // No argument case, cd to home path
-  else if (args[2]) printf ("Too many arguments \n");
+  else if (args[2]) printf ("cd: Too many arguments, please only enter one\n");
   else if (chdir(args[1]) != 0) perror(args[1]); // Descriptive error prints using perror 
 }
 

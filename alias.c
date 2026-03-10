@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "alias.h"
 
-char* aliasMap[2][10] = { {"","","","","","","","","",""}, {"","","","","","","","","",""}};
+char* aliasMap[2][10] = { {"","","","","","","","","",""}, {"","","","","","","","","",""} };
 
 void alias (char* args[]){
 
@@ -28,15 +28,11 @@ void alias (char* args[]){
 
   // Validation
   else if(args[2] == NULL){
-    printf("Error: Not enough parameters provided please use format 'alias <name> <command>'\n");
-    return;
-  }
-  else if (args[3]) {
-    printf("Error: Too many parameters, please use format 'alias <name> <command>'\n");
+    printf("alias: Not enough arguments provided please use format 'alias <name> <command>'\n");
     return;
   }
   else if (strstr(args[1], "!")){
-    printf("Error: Please avoid using '!' in aliases");
+    printf("alias: Please avoid using '!' in aliases");
       return;
   }
 
@@ -52,7 +48,7 @@ void alias (char* args[]){
   }
 
   if((i == 9) && (strcmp(aliasMap[0][i],""))){
-    printf("Error: No more aliases can be stored:\n Remove aliases using 'unalias <name>' to free slots\n");
+    printf("alias: No more aliases can be stored:\n Remove aliases using 'unalias <name>' to free slots\n");
     return;
   }
 
@@ -72,7 +68,16 @@ void alias (char* args[]){
   aliasMap[0][i] = malloc(strlen(args[1]) + 1);
   strcpy(aliasMap[0][i], args[1]);
   aliasMap[1][i] = malloc(strlen(args[2]) + 1);
-  strcpy(aliasMap[1][i], args[2]);
+
+  int j = 2;
+  char cmd[512] = {""};
+  while (args[j] != NULL) {
+    strcat(cmd, args[j]);
+    strcat(cmd, " ");
+    j++;
+  }
+  strcpy(aliasMap[1][i], cmd);
+
   return;
 }
 
@@ -80,11 +85,11 @@ void alias (char* args[]){
 void unalias (char* args[]){
 
   if(args[1] == NULL){
-    printf("Not enough parameters provided, please use format 'unalias <name>'\n");
+    printf("alias: Not enough arguments provided, please use format 'unalias <name>'\n");
     return;
   }
   else if (args[3]) {
-    printf("Error: Too many parameters, please use format 'unalias <name>'\n");
+    printf("alias: Too many arguments, please use format 'unalias <name>'\n");
     return;
   }
 
@@ -121,6 +126,8 @@ char* invokeAlias(char* args[]){
       return cmd;
     }
   }
+  free(cmd);
+  cmd = NULL;
   return args[0];
 }
 
@@ -136,6 +143,7 @@ void saveAlias() {
     }
   }
   fclose(f);
+  freeAliases();
 }
 
 
@@ -163,4 +171,16 @@ void loadAlias() {
     }
   }
   fclose(f);
+}
+
+
+void freeAliases () {
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 10; j++) {
+      if (strcmp(aliasMap[i][j], "") != 0) {
+	free(aliasMap[i][j]);
+	aliasMap[i][j] = NULL;
+      }
+    }
+  }
 }

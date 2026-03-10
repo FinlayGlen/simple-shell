@@ -20,6 +20,7 @@ void loadHistory () {
     strcpy(history[saved], buffer); //add history to buffer
     saved = (saved + 1) % 20; //circular buffer
   }
+  fclose(f);;
 }
 
 void saveHistory () {
@@ -41,7 +42,7 @@ void addHistory(char** parsed) {
   while (parsed[i] != NULL) { // Concatenates tokensied command back into full command for history
     strcat(cmd, parsed[i]);
     strcat(cmd, " ");
-    i++;
+    i++; 
   }
   
   if (strcmp(cmd, " ") != 0 && strcmp(cmd, "exit ") != 0) { // If cmd isnt empty and isnt exit
@@ -71,7 +72,7 @@ int calculateIndex(char* arg, int length) {
   }
 
   if (arg[1] == '-' && arg[2] - '0' != 0) {
-    n = 20 - n; // Calculates index of negative history invocation
+    n = 21 - n; // Calculates index of negative history invocation
   }
   
   return n-1;
@@ -81,11 +82,16 @@ char* invokeHistory (char* args[]) {
   int n = 0;
     
   n = calculateIndex(args[0], strlen(args[0])); 
+
+  if (args[1] != NULL) {
+    printf("history: too many arguments, none are needed\n");
+    return " ";
+  }
   
-  if (n < 0 ||  n > 19) {
-    printf("Error: History must be from -19 to 20\n");
+  if (n < 1 ||  n > 19) {
+    printf("history: History must be from -19 to 20\n");
   } else if (strcmp(history[n], "") == 0) {
-    printf("Error: No history for that index\n");
+    printf("history: No history for that index\n");
   } else if (strcmp(history[19], "") == 0) {
     return history[n];
   } else {
@@ -96,6 +102,11 @@ char* invokeHistory (char* args[]) {
 }
 
 void listHistory (char* args[]) { // If last index of history is empty
+  if (args[1] != NULL) {
+    printf("history: too many arguments, none are needed\n");
+    return;
+  }
+  
   if (strcmp(history[19], "") == 0) {
     for (int i = 0; i < 20; i++) {
       if (strcmp(history[i], "") != 0) { // If current index of history isnt empty

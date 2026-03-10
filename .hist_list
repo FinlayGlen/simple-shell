@@ -1,0 +1,20 @@
+ls 
+cd alias.c 
+cd 
+cd uni CS210 
+cd lk kl 
+history 
+ls -1F 
+history 
+pwd 
+ls -1F 
+history 
+cd 
+history 
+history 
+history 
+echo hello 
+ls 
+ls -1f 
+rm .hist_list 
+history 
