@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "alias.h"
 
 char* aliasMap[2][10] = { {"","","","","","","","","",""}, {"","","","","","","","","",""} };
@@ -133,7 +134,10 @@ char* invokeAlias(char* args[]){
 
 
 void saveAlias() {
+  
+  
   FILE *f = fopen(".aliases", "w");
+     
   if (f == NULL) return;
 
   for (int i = 0; i < 10; i++) {
@@ -148,6 +152,8 @@ void saveAlias() {
 
 
 void loadAlias() {
+  
+  
   FILE *f = fopen(".aliases", "r");
   if (f == NULL) return;
 

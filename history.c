@@ -10,6 +10,7 @@ char history[20][512];
 int saved = 0;
 
 void loadHistory () {
+  
   FILE *f = fopen(".hist_list", "r");
   if (f == NULL) return;
 
@@ -24,6 +25,7 @@ void loadHistory () {
 }
 
 void saveHistory () {
+  chdir("/HOME");
   FILE *f = fopen(".hist_list", "w");
   if (f == NULL) return;
 

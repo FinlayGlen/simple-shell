@@ -13,10 +13,8 @@ char* loadEnvironment () {
   printf("Loading environment...\n");
   
   char* path = getenv("PATH");
-  char* home = getenv("HOME");
-
-  chdir(home); // Changes directory to the home directory
-  
+  chdir("/HOME"); // Changes directory to the home directory
+   
   //load persistent history and aliases on startup
   loadHistory();
   loadAlias();
