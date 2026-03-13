@@ -17,7 +17,9 @@ char* loadEnvironment () {
 
   chdir(home); // Changes directory to the home directory
   
+  //load persistent history and aliases on startup
   loadHistory();
+  loadAlias();
   
   return path;
 }
@@ -105,6 +107,9 @@ void cd (char* args[]) {
 
 // Exits shell
 void exitShell (char* path) {
+  saveHistory();
+  saveAlias();
+  
   setenv("PATH", path, 1);
   printf("%s\n", getenv("PATH")); 
   saveHistory();

@@ -21,9 +21,6 @@ int main (void) {
   int isExit = 0;
   
   char* path = loadEnvironment();
-  //load persistent history and aliases on startup
-  loadHistory();
-  loadAlias();
 
   do {
     // Display prompt
@@ -80,9 +77,6 @@ int main (void) {
     parsed = NULL;
     aliasCmd = NULL;
   } while (isExit == 0); // exits while loop if buffer == exit
-  
-  saveHistory();
-  saveAlias();
   
   // cleanly exit shell
   exitShell(path);
