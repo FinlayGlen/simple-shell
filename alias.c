@@ -134,9 +134,13 @@ char* invokeAlias(char* args[]){
 
 
 void saveAlias() {
+  char file[100];
+  char* home = getenv("HOME");
+  strcpy(file, home);
   
+  strcat(file, "/.aliases");
   
-  FILE *f = fopen(".aliases", "w");
+  FILE *f = fopen(file, "w");
      
   if (f == NULL) return;
 
@@ -152,9 +156,12 @@ void saveAlias() {
 
 
 void loadAlias() {
+  char file[100];
+  char* home = getenv("HOME");
+  strcpy(file, home);
+  strcat(file, "/.aliases");
   
-  
-  FILE *f = fopen(".aliases", "r");
+  FILE *f = fopen(file, "r");
   if (f == NULL) return;
 
   char buffer[512]; //it is assumed that the line in the terminal is 512 characters long

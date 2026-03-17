@@ -10,8 +10,13 @@ char history[20][512];
 int saved = 0;
 
 void loadHistory () {
+  char file[100];
+  char* home = getenv("HOME");
+  strcpy(file, home);
+  strcat(file, "/.hist_list");
+
   
-  FILE *f = fopen(".hist_list", "r");
+  FILE *f = fopen(file, "r");
   if (f == NULL) return;
 
   char buffer[512];
@@ -25,8 +30,12 @@ void loadHistory () {
 }
 
 void saveHistory () {
-  chdir("/HOME");
-  FILE *f = fopen(".hist_list", "w");
+  char file[100];
+  char* home = getenv("HOME");
+  strcpy(file, home);
+  strcat(file, "/.hist_list");
+  
+  FILE *f = fopen(file, "w");
   if (f == NULL) return;
 
   for (int i = 0; i < 20; i++) {
