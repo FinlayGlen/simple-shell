@@ -89,7 +89,7 @@ void unalias (char* args[]){
     printf("alias: Not enough arguments provided, please use format 'unalias <name>'\n");
     return;
   }
-  else if (args[3]) {
+  else if (args[3] != NULL) {
     printf("alias: Too many arguments, please use format 'unalias <name>'\n");
     return;
   }

@@ -36,6 +36,10 @@ int main (void) {
 
     buffer[strcspn(buffer, "\n")] = 0;
     parsed = parseInput(buffer);
+
+    if (strcmp(parsed[0], "") == 0) {
+	continue;
+    }
     
     //check for aliased command
     char* aliasCmd = invokeAlias(parsed);

@@ -99,7 +99,7 @@ char* invokeHistory (char* args[]) {
     return " ";
   }
   
-  if (n < 1 ||  n > 19) {
+  if (n <= -1 ||  n > 19) {
     printf("history: History must be from -19 to 20\n");
   } else if (strcmp(history[n], "") == 0) {
     printf("history: No history for that index\n");
