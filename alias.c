@@ -89,7 +89,7 @@ void unalias (char* args[]){
     printf("alias: Not enough arguments provided, please use format 'unalias <name>'\n");
     return;
   }
-  else if (args[3] != NULL) {
+  else if (args[2] != NULL) {
     printf("alias: Too many arguments, please use format 'unalias <name>'\n");
     return;
   }
@@ -114,19 +114,31 @@ void unalias (char* args[]){
 
 char* invokeAlias(char* args[]){
   char* cmd = malloc(sizeof(char)*512);
+  strcpy(cmd, "");
+  int i = 0;
 
-  for(int i = 0; i < 10; i++){
-    if (strcmp(aliasMap[0][i], args[0]) == 0){
-      strcpy(cmd, aliasMap[1][i]);
-      int j = 1;
-      while (args[j] != NULL) {
+  while (args[i] != NULL) {
+    printf("cmd: %s\n", cmd);
+    for (int j = 0; j < 10; j++) {
+      printf("aliasMap[0][j]: %s\n", aliasMap[0][j]);
+      if (strcmp(aliasMap[0][j], args[i]) == 0) {
+	printf("args[i]: %s\n", args[i]);
+	strcat(cmd, aliasMap[1][j]);
 	strcat(cmd, " ");
-	strcat(cmd, args[j]);
-	j++;
+      } else {
+	strcat(cmd, args[i]);
+	strcat(cmd, " ");
       }
-      return cmd;
     }
+    i++;
   }
+
+  printf("%s\n", cmd);
+
+  if (strcmp(cmd, args[0]) != 0) {
+    return cmd;
+  }
+  
   free(cmd);
   cmd = NULL;
   return args[0];
