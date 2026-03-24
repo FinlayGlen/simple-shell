@@ -53,7 +53,10 @@ int main (void) {
     }
     
     //check for aliased command
-    char* aliasCmd = invokeAlias(parsed);
+    char* aliasCmd = parsed[0];
+    if (strcmp(parsed[0], "unalias") != 0) {
+      aliasCmd = invokeAlias(parsed);
+    }
     if (aliasCmd != parsed[0]) {
       strcpy(buffer, aliasCmd);
       parsed = parseInput(buffer); //reparse alias command
