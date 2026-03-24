@@ -115,19 +115,23 @@ void unalias (char* args[]){
 char* invokeAlias(char* args[]){
   char* cmd = malloc(sizeof(char)*512);
   strcpy(cmd, "");
+  int isAlias = 0;
   int i = 0;
 
   while (args[i] != NULL) {
-    //printf("cmd: %s\n", cmd);
+    printf("cmd: %s\n", cmd);
     for (int j = 0; j < 10; j++) {
       //printf("aliasMap[0][j]: %s\n", aliasMap[0][j]);
       if (strcmp(aliasMap[0][j], args[i]) == 0) {
 	strcat(cmd, aliasMap[1][j]);
 	strcat(cmd, " ");
-      } 
+	isAlias = 1;
+      }
     }
-    strcat(cmd, args[i]);
-    strcat(cmd, " ");
+    if (isAlias == 0) {
+      strcat(cmd, args[i]);
+      strcat(cmd, " ");
+    }
     i++;
   }
 
