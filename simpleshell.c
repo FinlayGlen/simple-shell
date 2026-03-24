@@ -16,7 +16,7 @@
 int main (void) {
   char buffer[512];
   char* output = "";
-  char* builtIn = "cd getpath setpath alias unalias history";
+  char* builtIn[6] = {"cd", "getpath",  "setpath",  "alias",  "unalias",  "history"};
   char** parsed = NULL;
   int isExit = 0;
   
@@ -67,11 +67,15 @@ int main (void) {
     } else if (strcmp(parsed[0], "exit") == 0) {
       isExit = 1;
     }
-    
-    if (strstr(builtIn, parsed[0]) || !output || strcmp(parsed[0], "exit") == 0) {
-      executeBuiltIn(parsed);
-    } else {
-      execute(parsed);
+
+    for (int i = 0; i < 6; i++) {
+      if (strcmp(builtIn[i], parsed[0]) == 0 || !output || strcmp(parsed[0], "exit") == 0) {
+	executeBuiltIn(parsed);
+	break;
+      } else {
+	execute(parsed);
+	break;
+      }
     }
     
     // memory management
