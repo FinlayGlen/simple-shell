@@ -78,7 +78,7 @@ int main (void) {
       } 
     }
 
-    if (isBuiltin == 0) {
+    if (isBuiltin == 0 && strcspn("!", parsed[0]) != 0) {
       execute(parsed);
     }
     

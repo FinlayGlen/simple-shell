@@ -83,7 +83,22 @@ int calculateIndex(char* arg, int length) {
   }
 
   if (arg[1] == '-' && arg[2] - '0' != 0) {
-    n = 21 - n; // Calculates index of negative history invocation
+    if (strcmp(history[19], "") == 0) {
+      n = (saved+1) - n;
+
+      if (n < 1 && (n-saved) > -19) {
+	return saved;
+      } else if ((n-saved) < -19) {
+	return n-saved;
+      }
+      
+    } else {
+      n = 21 - n;
+    }
+  }
+
+  if (saved == 0 && strcmp(arg, "!!") == 0) {
+    return n;
   }
   
   return n-1;
@@ -96,20 +111,21 @@ char* invokeHistory (char* args[]) {
 
   if (args[1] != NULL) {
     printf("history: too many arguments, none are needed\n");
-    return " ";
+    return args[0];
   }
   
   if (n <= -1 ||  n > 19) {
     printf("history: History must be from -19 to 20\n");
   } else if (strcmp(history[n], "") == 0) {
     printf("history: No history for that index\n");
+    return args[0];
   } else if (strcmp(history[19], "") == 0) {
     return history[n];
   } else {
     return history[(n+saved)%20];
   }
   
-  return " ";
+  return args[0];
 }
 
 void listHistory (char* args[]) { // If last index of history is empty
