@@ -54,7 +54,7 @@ int main (void) {
     
     //check for aliased command
     char* aliasCmd = parsed[0];
-    if (strcmp(parsed[0], "unalias") != 0) {
+    if (strcmp(parsed[0], "unalias") != 0 && strcmp(parsed[0], "alias") != 0) {
       aliasCmd = invokeAlias(parsed);
     }
     if (aliasCmd != parsed[0]) {
