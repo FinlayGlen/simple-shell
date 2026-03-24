@@ -68,14 +68,18 @@ int main (void) {
       isExit = 1;
     }
 
+    int isBuiltin = 0;
+    
     for (int i = 0; i < 6; i++) {
       if (strcmp(builtIn[i], parsed[0]) == 0 || !output || strcmp(parsed[0], "exit") == 0) {
 	executeBuiltIn(parsed);
+	isBuiltin = 1;
 	break;
-      } else {
-	execute(parsed);
-	break;
-      }
+      } 
+    }
+
+    if (isBuiltin == 0) {
+      execute(parsed);
     }
     
     // memory management
