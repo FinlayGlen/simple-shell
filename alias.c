@@ -115,10 +115,10 @@ void unalias (char* args[]){
 char* invokeAlias(char* args[]){
   char* cmd = malloc(sizeof(char)*512);
   strcpy(cmd, "");
-  int isAlias = 0;
   int i = 0;
 
   while (args[i] != NULL) {
+    int isAlias = 0;
     for (int j = 0; j < 10; j++) {
       if (strcmp(aliasMap[0][j], args[i]) == 0) {
 	strcat(cmd, aliasMap[1][j]);
